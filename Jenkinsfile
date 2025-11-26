@@ -1,34 +1,36 @@
 pipeline {
-    agent {
-        docker { image 'python:3.10' }
-    }
+    agent any
 
     stages {
         stage('Build') {
             steps {
-                echo "Creating virtual environment and installing dependencies..."
-                sh 'python -m venv venv'
+                echo 'Installing dependencies...'
+                sh 'python3 --version || python --version'
+                sh 'python3 -m venv venv || python -m venv venv'
                 sh '. venv/bin/activate && pip install -r requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running Tests..."
+                echo 'Running tests...'
                 sh '. venv/bin/activate && python -m pytest'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploy step executed."
+                echo 'Deploy Stage Complete!'
             }
         }
     }
 
     post {
         failure {
-            echo "Pipeline failed. Check logs for details."
+            echo 'Pipeline Failed. Check Logs!'
+        }
+        success {
+            echo 'Pipeline Successful!'
         }
     }
 }
